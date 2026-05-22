@@ -9,7 +9,7 @@ use think\facade\Db;
 class Order extends BaseController
 {
 
-    protected $notNeedToken = ['test', 'createOrder', 'queryOrder'];
+    protected $notNeedToken = ['test', 'createOrder', 'queryOrder', 'notify'];
 
 
     public function test()
@@ -52,7 +52,7 @@ class Order extends BaseController
         if (!isset($params['sign']) || !$params['sign']) $this->apiError('sign 不能为空', 500);
         $merchant = Db::name('merchant')->where('appid', $params['appid'])->find();
         if (!$merchant) $this->apiError('appid 填写错误', 500);
-//        if ($params['sign'] != $this->getSign($params, $merchant['secret'])) $this->apiError('sign 填写错误');
+        if ($params['sign'] != $this->getSign($params, $merchant['secret'])) $this->apiError('sign 填写错误');
         $merchantPaymentProduct = Db::name('merchant_payment_product')->where('id', $params['productId'])->find();
         if (!$merchantPaymentProduct) $this->apiError('productId 填写错误', 500);
         $paymentProduct = Db::name('payment_product')->where('id', $merchantPaymentProduct['payment_product_id'])->find();
@@ -79,7 +79,7 @@ class Order extends BaseController
                 $config = [
                     'amount' => $params['amount'],
                     'returnUrl' => $params['returnUrl'],
-                    'notifyUrl' => $params['notifyUrl'],
+                    'notifyUrl' => 'http://211.101.245.216:9000/api/order/notify',
                     'ip' => $params['ip'],
                 ];
                 $sandPayService = new SandPayService();
@@ -115,6 +115,12 @@ class Order extends BaseController
         $beforeSignString = urldecode(http_build_query($arr, '', '&')) . '&secret=' . $secret;
         $signString = strtoupper(md5($beforeSignString));
         return $signString;
+    }
+
+    public function notify()
+    {
+        $rawInput = file_get_contents('php://input');
+        file_put_contents('1.txt', $rawInput);
     }
 
 }
