@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>仟通支付 - 支付接口文档</title>
+    <!-- 使用 Inter 字体，提升现代感与可读性 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+          rel="stylesheet">
+    <!-- Font Awesome 6 免费图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f6f9fc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #1a2c3e;
+            padding: 2rem 1.5rem;
+        }
+
+        /* 主容器 */
+        .docs-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 头部区域 */
+        .api-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2edf2;
+            padding-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1rem;
+        }
+
+        .title-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e6f3f, #0f4c2c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .title-section p {
+            color: #4a627a;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .badge-area {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: white;
+            border-radius: 40px;
+            padding: 0.35rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            border: 1px solid #dce5ec;
+        }
+
+        .badge i {
+            margin-right: 6px;
+            color: #2c7a4d;
+        }
+
+        /* 布局：侧边栏 + 内容区 */
+        .flex-layout {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* 侧边导航 */
+        .sidebar-nav {
+            flex: 1;
+            min-width: 250px;
+            max-width: 280px;
+            position: sticky;
+            top: 1.5rem;
+            height: fit-content;
+            background: white;
+            border-radius: 24px;
+            padding: 1.2rem 0.5rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e6edf4;
+        }
+
+        .sidebar-nav h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #5e7e9c;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-list li {
+            margin: 0.2rem 0;
+        }
+
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.6rem 1rem;
+            border-radius: 16px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #2c4c6c;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-list a i {
+            width: 22px;
+            color: #5f8bb3;
+        }
+
+        .nav-list a:hover {
+            background: #eef3fc;
+            color: #1a6e44;
+        }
+
+        .nav-list a.active {
+            background: #e6f4ea;
+            color: #1e6f3f;
+        }
+
+        .nav-list a.active i {
+            color: #1e6f3f;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            flex: 3;
+            min-width: 260px;
+        }
+
+        /* 规则面板 (协议) */
+        .protocol-card {
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #e6edf4;
+            margin-bottom: 2rem;
+            padding: 1.2rem 1.8rem;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        }
+
+        .protocol-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .rule-item {
+            background: #fafdff;
+            border-left: 3px solid #2c7a4d;
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .sign-steps {
+            background: #f8fafd;
+            padding: 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        /* 接口分组卡片 */
+        .api-card {
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #e9f0f6;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .card-header {
+            padding: 1.2rem 1.8rem;
+            background: #fefefe;
+            border-bottom: 1px solid #eef3f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .endpoint-url {
+            font-family: 'SF Mono', monospace;
+            background: #f0f4f9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #1a6e44;
+        }
+
+        /* 接口条目 */
+        .api-row {
+            border-bottom: 1px solid #f0f5fa;
+            transition: background 0.1s;
+        }
+
+        .api-row:last-child {
+            border-bottom: none;
+        }
+
+        .api-summary {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.8rem;
+            cursor: pointer;
+        }
+
+        .method {
+            font-family: monospace;
+            font-weight: 800;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.9rem;
+            border-radius: 30px;
+            background: #eef2ff;
+            color: #2563eb;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .method.post {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .method.get {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .path {
+            font-family: monospace;
+            font-weight: 500;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+        }
+
+        .api-title {
+            flex: 1;
+            font-weight: 500;
+            color: #2c4c6c;
+        }
+
+        .expand-icon {
+            color: #8ca3bc;
+            transition: transform 0.2s;
+        }
+
+        .api-row.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .api-detail {
+            display: none;
+            padding: 0 1.8rem 1.5rem 1.8rem;
+            background: #ffffff;
+            border-top: 1px solid #f0f5fa;
+        }
+
+        .api-row.expanded .api-detail {
+            display: block;
+        }
+
+        .detail-block {
+            margin-top: 1.2rem;
+        }
+
+        .detail-block h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #607d8b;
+            margin-bottom: 0.6rem;
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            background: #fbfdfe;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .param-table th, .param-table td {
+            text-align: left;
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #e9edf2;
+        }
+
+        .param-table th {
+            background: #f1f7fd;
+            font-weight: 600;
+        }
+
+        .pre-code {
+            background: #0f212e;
+            color: #cfdfed;
+            padding: 1rem;
+            border-radius: 18px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .note-info {
+            background: #fefce8;
+            border-left: 4px solid #eab308;
+            padding: 0.7rem 1rem;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            margin-top: 0.6rem;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6f94b0;
+            border-top: 1px solid #e3ecf3;
+            padding-top: 1.8rem;
+        }
+
+        @media (max-width: 780px) {
+            body {
+                padding: 1rem;
+            }
+
+            .sidebar-nav {
+                position: static;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="docs-wrapper">
+    <div class="api-header">
+        <div class="title-section">
+            <h1><i class="fas fa-credit-card" style="color:#2c7a4d;"></i> 仟通支付接口文档</h1>
+        </div>
+        <div class="badge-area">
+            <div class="badge"><i class="fas fa-exchange-alt"></i> 传输: HTTP/HTTPS</div>
+            <div class="badge"><i class="fas fa-lock"></i> 签名: MD5</div>
+            <div class="badge"><i class="fas fa-code"></i> 字符集: UTF-8</div>
+        </div>
+    </div>
+
+    <div class="flex-layout">
+        <aside class="sidebar-nav">
+            <h3><i class="fas fa-list-ul"></i> 接口目录</h3>
+            <ul class="nav-list">
+                <li><a href="#protocol" class="nav-link" data-target="protocol"><i class="fas fa-shield-alt"></i> 签名算法</a>
+                </li>
+                <li><a href="#create-order" class="nav-link" data-target="create"><i class="fas fa-shopping-cart"></i>
+                    统一下单</a></li>
+                <li><a href="#query-order" class="nav-link" data-target="query"><i class="fas fa-search"></i>
+                    查询订单</a></li>
+                <li><a href="#notify" class="nav-link" data-target="notify"><i class="fas fa-bell"></i> 支付结果通知</a>
+                </li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <!-- 协议规则区域 -->
+            <div id="protocol" class="protocol-card">
+                <h2><i class="fas fa-file-contract"></i> 1. 签名算法</h2>
+                <div style="margin-top: 1rem;">
+                    <div><i class="fas fa-signature"></i> <strong>签名算法 (MD5)</strong></div>
+                    <div class="sign-steps">
+                        <p>1. 所有非空参数（不包含sign）按参数名ASCII升序排序，拼接成 key1=value1&key2=value2... →
+                            stringA。</p>
+                        <p>2. 末尾拼接上 <span class="inline-code">secret=商户密钥</span> 得到 stringSignTemp。</p>
+                        <p>3. 对stringSignTemp进行MD5运算，得到32位大写sign值。</p>
+                        <p>
+                            例子：strtoupper(md5(amount=xxx&appid=xxx&ip=xxx&orderSn=xxx&productId=xxx&returnUrl=xxx&secret=xxx))</p>
+                        <p>重要：回调通知验签时，需接收所有参数(除sign和空值)参与签名，不可写死字段。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统一下单接口 -->
+            <div id="create-order" class="api-card" data-card="create">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle" style="font-size: 1.6rem; color:#2c7a4d;"></i>
+                    <h2>2. 统一下单</h2>
+                    <div class="endpoint-url">POST /api/order/createOrder</div>
+                </div>
+                <div class="api-row" data-api>
+                    <div class="api-summary">
+                        <span class="method post">POST</span>
+                        <span class="path">/api/order/createOrder</span>
+                        <span class="api-title">发起支付，获取支付链接/表单</span>
+                        <i class="fas fa-chevron-down expand-icon"></i>
+                    </div>
+                    <div class="api-detail">
+                        <div class="detail-block">
+                            <h4><i class="fas fa-list"></i> 请求参数</h4>
+                            <table class="param-table">
+                                <thead>
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>必填</th>
+                                    <th>类型</th>
+                                    <th>描述</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>appid</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>商户 AppID</td>
+                                </tr>
+                                <tr>
+                                    <td>amount</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>金额（元）</td>
+                                </tr>
+                                <tr>
+                                    <td>productId</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>支付产品 ID</td>
+                                </tr>
+                                <tr>
+                                    <td>orderSn</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>商户订单号</td>
+                                </tr>
+                                <tr>
+                                    <td>notifyUrl</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>回调地址</td>
+                                </tr>
+                                <tr>
+                                    <td>returnUrl</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>返回地址</td>
+                                </tr>
+                                <tr>
+                                    <td>ip</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>客户端 IP</td>
+                                </tr>
+                                <tr>
+                                    <td>sign</td>
+                                    <td>是</td>
+                                    <td>String</td>
+                                    <td>签名</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="detail-block">
+                            <h4>📤 成功响应示例</h4>
+                            <div class="pre-code">
+                                {
+                                "code": 200,
+                                "msg": "success",
+                                "time": "1779455353",
+                                "data": {
+                                "url": "https://www.xxx.com"
+                                }
+                                }
+                            </div>
+                            <h4 style="margin-top: 12px;">⚠️ 失败响应示例</h4>
+                            <div class="pre-code">
+                                {"code": 500, "msg": "商户支付通道已关闭", "data": []}
+                            </div>
+                        </div>
+                        <div class="detail-block">
+                            <h4>响应字段说明</h4>
+                            <table class="param-table">
+                                <tr>
+                                    <th>字段</th>
+                                    <th>类型</th>
+                                    <th>描述</th>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>String</td>
+                                    <td>成功：200</td>
+                                </tr>
+                                <tr>
+                                    <td>msg</td>
+                                    <td>String</td>
+                                    <td>描述</td>
+                                </tr>
+                                <tr>
+                                    <td>time</td>
+                                    <td>String</td>
+                                    <td>时间</td>
+                                </tr>
+                                <tr>
+                                    <td>data.url</td>
+                                    <td>String</td>
+                                    <td>跳转地址</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 查询订单接口 -->
+            <div id="query-order" class="api-card">
+                <div class="card-header">
+                    <i class="fas fa-magnifying-glass-dollar" style="font-size: 1.6rem; color:#2c7a4d;"></i>
+                    <h2>3. 查询支付订单</h2>
+                    <div class="endpoint-url">POST /api/order/queryOrder</div>
+                </div>
+                <div class="api-row" data-api>
+                    <div class="api-summary">
+                        <span class="method post">POST</span>
+                        <span class="path">/api/order/queryOrder</span>
+                        <span class="api-title">查询订单状态，支持商户单号/支付单号</span>
+                        <i class="fas fa-chevron-down expand-icon"></i>
+                    </div>
+                    <div class="api-detail">
+                        <div class="detail-block">
+                            <h4>请求参数</h4>
+                            <table class="param-table">
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>必填</th>
+                                    <th>描述</th>
+                                </tr>
+                                <tr>
+                                    <td>appid</td>
+                                    <td>是</td>
+                                    <td>商户 AppID</td>
+                                </tr>
+                                <tr>
+                                    <td>orderSn</td>
+                                    <td>是</td>
+                                    <td>订单号（商户订单号 / 平台订单号）</td>
+                                </tr>
+                                <tr>
+                                    <td>sign</td>
+                                    <td>是</td>
+                                    <td>签名</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="detail-block">
+                            <h4>✅ 成功响应</h4>
+                            <div class="pre-code">
+                                {
+                                "code": 200,
+                                "msg": "success",
+                                "time": "1779455353",
+                                "data": {
+                                "amount": 100,
+                                "merchant_order_sn": "xxx",
+                                "order_sn": "xxx",
+                                "product_id": 1,
+                                "pay_status": 1,
+                                "pay_at": "2026-05-22 21:17:20",
+                                "callback_status": 1,
+                                "callback_at": "2026-05-22 21:17:20"
+                                }
+                                }
+                            </div>
+                        </div>
+                        <div class="detail-block">
+                            <h4>响应字段说明</h4>
+                            <table class="param-table">
+                                <tr>
+                                    <th>字段</th>
+                                    <th>类型</th>
+                                    <th>描述</th>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>String</td>
+                                    <td>成功：200</td>
+                                </tr>
+                                <tr>
+                                    <td>msg</td>
+                                    <td>String</td>
+                                    <td>描述</td>
+                                </tr>
+                                <tr>
+                                    <td>time</td>
+                                    <td>String</td>
+                                    <td>时间</td>
+                                </tr>
+                                <tr>
+                                    <td>data.amount</td>
+                                    <td>String</td>
+                                    <td>金额（元）</td>
+                                </tr>
+                                <tr>
+                                    <td>data.merchant_order_sn</td>
+                                    <td>String</td>
+                                    <td>商户订单编号</td>
+                                </tr>
+                                <tr>
+                                    <td>data.order_sn</td>
+                                    <td>String</td>
+                                    <td>平台订单编号</td>
+                                </tr>
+                                <tr>
+                                    <td>data.product_id</td>
+                                    <td>String</td>
+                                    <td>产品 ID</td>
+                                </tr>
+                                <tr>
+                                    <td>data.pay_status</td>
+                                    <td>String</td>
+                                    <td>支付状态（0：未支付 1：已支付）</td>
+                                </tr>
+                                <tr>
+                                    <td>data.pay_at</td>
+                                    <td>String</td>
+                                    <td>支付时间</td>
+                                </tr>
+                                <tr>
+                                    <td>data.callback_status</td>
+                                    <td>String</td>
+                                    <td>回调状态（0：未回调 1：回调成功 2：回调失败）</td>
+                                </tr>
+                                <tr>
+                                    <td>data.callback_at</td>
+                                    <td>String</td>
+                                    <td>回调时间</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 支付结果通知 (回调) -->
+            <div id="notify" class="api-card">
+                <div class="card-header">
+                    <i class="fas fa-rotate-right" style="font-size: 1.6rem; color:#2c7a4d;"></i>
+                    <h2>4. 支付结果通知</h2>
+                    <div class="endpoint-url">POST (form/json) 商户notifyUrl</div>
+                </div>
+                <div class="api-row" data-api>
+                    <div class="api-summary">
+                        <span class="method post">POST</span>
+                        <span class="path">回调接口 (商户提供)</span>
+                        <span class="api-title">异步通知支付结果，需返回 "success" 字符串</span>
+                        <i class="fas fa-chevron-down expand-icon"></i>
+                    </div>
+                    <div class="api-detail">
+                        <div class="detail-block">
+                            <h4>📨 回调参数 (部分核心)</h4>
+                            <table class="param-table">
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>描述</th>
+                                </tr>
+                                <tr>
+                                    <td>appid</td>
+                                    <td>商户 AppID</td>
+                                </tr>
+                                <tr>
+                                    <td>amount</td>
+                                    <td>金额（元）</td>
+                                </tr>
+                                <tr>
+                                    <td>merchant_order_sn</td>
+                                    <td>商户订单号</td>
+                                </tr>
+                                <tr>
+                                    <td>order_sn</td>
+                                    <td>平台订单号</td>
+                                </tr>
+                                <tr>
+                                    <td>product_id</td>
+                                    <td>产品 ID</td>
+                                </tr>
+                                <tr>
+                                    <td>pay_status</td>
+                                    <td>支付状态（0：未支付 1：已支付）</td>
+                                </tr>
+                                <tr>
+                                    <td>pay_at</td>
+                                    <td>支付时间</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="detail-block">
+                            <h4>⚠️ 验签重要提醒</h4>
+                            <div class="note-info">
+                                <i class="fas fa-brain"></i> 接收回调时，<strong>绝对不能写死参与签名的字段</strong>，需要动态获取所有非空参数(除sign外)
+                                按规则生成签名比对。<br>
+                                支付中心可能会增加扩展字段，商户系统需兼容。
+                            </div>
+                            <h4>🔁 响应要求</h4>
+                            <div class="pre-code" style="background: #eaf5e8; color:#1a4c2a;">
+                                成功接收 → 输出纯文本: success (不要带任何HTML或JSON)<br>
+                                失败或其它返回值 → 系统会重试回调
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <i class="fas fa-shield-heart"></i> 签名安全第一 · 请务必保管好商户密钥key · 支持MD5异步验签
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 实现侧边栏高亮 + 平滑滚动
+    const navLinks = document.querySelectorAll('.nav-link');
+    const apiRows = document.querySelectorAll('.api-row');
+
+    // 展开/折叠接口详情
+    apiRows.forEach(row => {
+        const summary = row.querySelector('.api-summary');
+        if (summary) {
+            summary.addEventListener('click', (e) => {
+                e.stopPropagation();
+                row.classList.toggle('expanded');
+            });
+        }
+    });
+
+    // 平滑滚动到对应区域 + 高亮侧边栏
+    function setActiveLink(id) {
+        navLinks.forEach(link => {
+            const targetId = link.getAttribute('data-target');
+            if (targetId === id) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            if (!targetId) return;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+                setActiveLink(targetId);
+            }
+        });
+    });
+
+    // 监听滚动自动高亮 (简化，主要手动也可)
+    const sections = ['protocol', 'create-order', 'query-order', 'notify'];
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                if (id) setActiveLink(id);
+            }
+        });
+    }, {threshold: 0.3});
+    sections.forEach(sec => {
+        const el = document.getElementById(sec);
+        if (el) observer.observe(el);
+    });
+    // 默认展开第一个接口详情可以更友好，不做全展开以免过长，但保留交互
+    // 首屏默认打开统一下单详情（可选，更直观）
+    const firstApi = document.querySelector('#create-order .api-row');
+    if (firstApi) firstApi.classList.add('expanded');
+</script>
+</body>
+</html>
