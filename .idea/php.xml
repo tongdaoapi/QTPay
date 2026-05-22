@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MessDetectorOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCSFixerOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCodeSnifferOptionsConfiguration">
+    <option name="highlightLevel" value="WARNING" />
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/php/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-helper" />
+      <path value="$PROJECT_DIR$/php/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/php/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/framework" />
+      <path value="$PROJECT_DIR$/php/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-filesystem" />
+      <path value="$PROJECT_DIR$/php/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-container" />
+      <path value="$PROJECT_DIR$/php/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/php/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-view" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-dumper" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-trace" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-template" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-orm" />
+      <path value="$PROJECT_DIR$/php/vendor/topthink/think-validate" />
+      <path value="$PROJECT_DIR$/php/vendor/phpgangsta/googleauthenticator" />
+      <path value="$PROJECT_DIR$/php/vendor/league/flysystem-local" />
+      <path value="$PROJECT_DIR$/php/vendor/league/mime-type-detection" />
+      <path value="$PROJECT_DIR$/php/vendor/composer" />
+      <path value="$PROJECT_DIR$/php/vendor/league/flysystem" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.1">
+    <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+  <component name="PhpStanOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PsalmOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+</project>
