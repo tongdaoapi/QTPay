@@ -79,7 +79,7 @@ class Order extends BaseController
                 $config = [
                     'amount' => $params['amount'],
                     'returnUrl' => $params['returnUrl'],
-                    'notifyUrl' => 'http://211.101.245.216:9000/api/order/notify',
+                    'notifyUrl' => 'https://zsmxnn.fs620.com/api/order/notify',
                     'ip' => $params['ip'],
                 ];
                 $sandPayService = new SandPayService();
@@ -120,7 +120,23 @@ class Order extends BaseController
     public function notify()
     {
         $rawInput = file_get_contents('php://input');
+//        $rawInput = 'respDesc=%E6%88%90%E5%8A%9F&respTime=2026-05-23+11%3A25%3A42&sign=TNqDJHKOD0jkh%2BHaMboDvmDUAz5Y52BY1UmlhBzkgm42SuL9WhsT20sYmV44709EkBawm79zrFujfS19eEUQs8f0uJNzwrbAlBXKSPFOeBsG41LWdEgLDPDcrD789xUOzflIfXWMbsHC5ncuOKOnGVeedShabJhUPGOILhrKNQdNxRN6WZuK4OLY%2Bz%2BV4A5oNEjxwYYJH5ArgskBjImBnKyeKlV0MMHCESKL3wcKdBYYYGG6zFSjXVYJTCdo4wwAoHSSybjWN0dmZ4g6P7Fa3UG%2BXBtSylb83JYLCIna430xUz3gVHjXEBktTp%2FPx5JrwoB74ZC0z5hUWFZdRSduNA%3D%3D&signType=RSA&accessMid=6888805129054&bizData=%7B%22marketProduct%22%3A%22QZF%22%2C%22amount%22%3A%221.00%22%2C%22payMode%22%3A%22SANDH5%22%2C%22plFeeAmt%22%3A%220.00%22%2C%22mid%22%3A%226888805129054%22%2C%22orderStatus%22%3A%22success%22%2C%22sandSerialNo%22%3A%22260523093505192000007492%22%2C%22channelOrderNo%22%3A%22052326j200000503%22%2C%22outRespTime%22%3A%222026-05-23+11%3A25%3A42%22%2C%22eventType%22%3A%22recv%22%2C%22outOrderNo%22%3A%22F2026052311241473%22%2C%22payer%22%3A%7B%22payerLogonNo%22%3A%22621691******1414%22%2C%22dcFlag%22%3A%221%22%2C%22payerAccNo%22%3A%22621691******1414%22%2C%22payerAccType%22%3A%22CUP%22%2C%22signNo%22%3A%22SDSMP00688880512905420260523104913750870%22%7D%2C%22feeAmt%22%3A%220.10%22%2C%22extraFeeAmt%22%3A%220.00%22%2C%22settleInfo%22%3A%7B%22mhtAccDate%22%3A%2220260523%22%2C%22expSettleAmt%22%3A%221.00%22%7D%2C%22resultStatus%22%3A%22success%22%2C%22payType%22%3A%22FASTPAY%22%2C%22discountInfo%22%3A%7B%22issuerSubsidyAmt%22%3A%220.00%22%2C%22activityNo%22%3A%22%22%2C%22channelSubsidyAmt%22%3A%220.00%22%2C%22sandSubsidyAmt%22%3A%220.00%22%7D%2C%22channelFinishTime%22%3A%2220260523112542%22%2C%22buyerPayAmt%22%3A%221.00%22%2C%22holidayFeeAmt%22%3A%220.00%22%2C%22channelSerialNo%22%3A%22%22%2C%22reqReserved%22%3A%7B%22reqMemo%22%3A%22%22%7D%2C%22finishedTime%22%3A%2220260523112541%22%7D&version=4.0.0&respCode=success';
+        $orderSn = $rawInput['bizData']['outOrderNo'];
+        $orderStatus = $rawInput['bizData']['orderStatus'];
+        $order = Db::name('order')->where('orderSn', $orderSn)->find();
+        if ($order && !$order['pay_status'] && $orderStatus == 'success') {
+            Db::name('order')->where('id', $order['id'])->update([
+                'pay_status' => 1,
+                'pay_at' => date('Y-m-d H:i:s'),
+            ]);
+            Db::name('notify')->insert([
+                'order_id' => $order['id'],
+                'last_notify_time' => date('Y-m-d H:i:s'),
+            ]);
+        }
         file_put_contents('1.txt', $rawInput);
+        file_put_contents('2.txt', json_encode(input('post.')));
+        die('success');
     }
 
 }
