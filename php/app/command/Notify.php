@@ -45,6 +45,10 @@ class Notify extends Command
                                     'status' => 1,
                                     'time' => $value['time'] + 1
                                 ]);
+                                Db::name('order')->where('id', $order['id'])->update([
+                                    'callback_status' => 1,
+                                    'callback_at' => date('Y-m-d H:i:s')
+                                ]);
                             } else {
                                 Db::name('notify')->where('id', $value['id'])->update([
                                     'log' => json_encode($log),
