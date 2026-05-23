@@ -61,6 +61,9 @@ class Notify extends Command
                                             'callback_status' => 2,
                                             'callback_at' => date('Y-m-d H:i:s')
                                         ]);
+                                        Db::name('notify')->where('id', $value['id'])->update([
+                                            'status' => 1
+                                        ]);
                                     }
                                 }
                             }
