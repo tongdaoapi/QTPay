@@ -44,7 +44,7 @@ class SandPayService
             'goodsClass' => 99,
             'mid' => $this->mid,
             'description' => '订单充值',
-            'outOrderNo' => $params['orderNo'],
+            'outOrderNo' => $params['orderSn'],
             'payType' => 'FASTPAY',
             'payerInfo' => [
                 'frontUrl' => $params['returnUrl'],
