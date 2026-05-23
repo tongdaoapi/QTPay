@@ -55,16 +55,17 @@ class Notify extends Command
                                     'last_notify_time' => date('Y-m-d H:i:s'),
                                     'time' => $value['time'] + 1
                                 ]);
+                                if ($value['time'] + 1 >= 10) {
+                                    if (!$order['callback_status']) {
+                                        Db::name('order')->where('id', $value['order_id'])->update([
+                                            'callback_status' => 2,
+                                            'callback_at' => date('Y-m-d H:i:s')
+                                        ]);
+                                    }
+                                }
                             }
                             dump('订单：' . $order['order_sn'] . '，通知：' . $value['time'] . '，地址：' . $order['notify_url'] . '，参数：' . json_encode($params));
                         }
-                    }
-                } else {
-                    if (!$order['callback_status']) {
-                        Db::name('order')->where('id', $value['order_id'])->update([
-                            'callback_status' => 2,
-                            'callback_at' => date('Y-m-d H:i:s')
-                        ]);
                     }
                 }
             }
