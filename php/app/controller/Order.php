@@ -9,7 +9,7 @@ use think\facade\Db;
 class Order extends BaseController
 {
 
-    protected $notNeedToken = ['test', 'createOrder', 'queryOrder', 'notify'];
+    protected $notNeedToken = ['test', 'createOrder', 'queryOrder', 'notify', 'createNotify', 'getOrder'];
 
 
     public function test()
@@ -138,6 +138,36 @@ class Order extends BaseController
             ]);
         }
         die('success');
+    }
+
+    public function createNotify()
+    {
+        $orderSn = input('orderSn');
+        if (!$orderSn) $this->error('请输入订单号');
+        $order = Db::name('order')->where('order_sn = "' . $orderSn . '" or merchant_order_sn = "' . $orderSn . '"')->find();
+        if (!$order) $this->error('订单不存在');
+        $notify = Db::name('notify')->where('order_id', $order['id'])->find();
+        if ($notify) {
+            $this->error('回调正在执行，请勿重复创建');
+        } else {
+            Db::name('notify')->insert([
+                'order_id' => $order['id'],
+                'last_notify_time' => date('Y-m-d H:i:s'),
+            ]);
+            $this->success($orderSn . '回调创建成功');
+        }
+    }
+
+    public function getOrder()
+    {
+        $orderSn = input('orderSn');
+        if (!$orderSn) $this->error('请输入订单号');
+        $order = Db::name('order')->where('order_sn = "' . $orderSn . '" or merchant_order_sn = "' . $orderSn . '"')->find();
+        if (!$order) $this->error('订单不存在');
+        $this->success('查询成功', [
+            'order' => $order,
+            'notifyList' => Db::name('notify')->where('order_id', $order['id'])->select()
+        ]);
     }
 
 }

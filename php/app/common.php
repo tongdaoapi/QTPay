@@ -4,15 +4,43 @@ use think\facade\Db;
 
 function generateSecret($length = 32)
 {
-    $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    $secret = '';
-    $max = strlen($chars) - 1;
-
-    for ($i = 0; $i < $length; $i++) {
-        $secret .= $chars[random_int(0, $max)];
+    while (true) {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $secret = '';
+        $max = strlen($chars) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $secret .= $chars[random_int(0, $max)];
+        }
+        if (!Db::name('merchant')->where('secret', $secret)->find()) {
+            return $secret;
+        }
     }
+}
 
-    return $secret;
+function generateAppid($length = 16)
+{
+    while (true) {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $appid = '';
+        $max = strlen($chars) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $appid .= $chars[random_int(0, $max)];
+        }
+        if (!Db::name('merchant')->where('appid', $appid)->find()) {
+            return $appid;
+        }
+    }
+}
+
+function generatePassword($length = 6)
+{
+    $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    $password = '';
+    $max = strlen($chars) - 1;
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $chars[random_int(0, $max)];
+    }
+    return $password;
 }
 
 function generateToken($userId)

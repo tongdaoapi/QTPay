@@ -9,7 +9,7 @@ use think\facade\Db;
 class User extends BaseController
 {
 
-    protected $notNeedToken = ['login'];
+    protected $notNeedToken = ['login', 'createUser'];
 
     public function login()
     {
@@ -176,13 +176,37 @@ class User extends BaseController
             'page' => $page,
             'var_page' => 'page',
         ])->toArray();
-//        foreach ($data['data'] as $key => &$value) {
-//            $merchantPaymentProduct = Db::name('merchant_payment_product')->where('payment_product_id', $value['id'])->find();
-//            if ($merchantPaymentProduct) {
-//                $value['product_id'] = $merchantPaymentProduct['id'];
-//                $value['rate'] = $merchantPaymentProduct['rate'];
-//            }
-//        }
         $this->success($data);
     }
+
+    public function createUser()
+    {
+        $username = input('username');
+        if (!$username) $this->error('请输入用户名');
+        $merchant = Db::name('merchant')->where('username', $username)->find();
+        if ($merchant) {
+            $this->success('查询成功', [
+                'username' => $username,
+                'appid' => $merchant['appid'],
+                'secret' => $merchant['secret'],
+            ]);
+        } else {
+            $password = generatePassword();
+            $appid = generateAppid();
+            $secret = generateSecret();
+            Db::name('merchant')->insert([
+                'username' => $username,
+                'password' => md5($password),
+                'appid' => $appid,
+                'secret' => $secret,
+            ]);
+            $this->success('创建成功', [
+                'username' => $username,
+                'password' => $password,
+                'appid' => $appid,
+                'secret' => $secret,
+            ]);
+        }
+    }
+
 }
