@@ -155,7 +155,9 @@ class Order extends BaseController
                 'last_notify_time' => date('Y-m-d H:i:s'),
             ]);
             Db::name('order')->where('id', $order['id'])->update([
-                'callback_status' => 0
+                'callback_status' => 0,
+                'pay_status' => 1,
+                'pay_at' => date('Y-m-d H:i:s')
             ]);
             $this->success($orderSn . '回调创建成功');
         }
