@@ -146,7 +146,7 @@ class Order extends BaseController
         if (!$orderSn) $this->error('请输入订单号');
         $order = Db::name('order')->where('order_sn = "' . $orderSn . '" or merchant_order_sn = "' . $orderSn . '"')->find();
         if (!$order) $this->error('订单不存在');
-        $notify = Db::name('notify')->where('order_id', $order['id'])->find();
+        $notify = Db::name('notify')->where('order_id', $order['id'])->where('status', 0)->find();
         if ($notify) {
             $this->error('回调正在执行，请勿重复创建');
         } else {
