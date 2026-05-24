@@ -43,6 +43,16 @@ function generatePassword($length = 6)
     return $password;
 }
 
+function generateDeviceId($request)
+{
+    $ip = $request->ip();
+    $ua = $request->header('User-Agent');
+    $acceptLang = $request->header('Accept-Language');
+    $raw = $ip . '|' . $ua . '|' . $acceptLang;
+    $deviceId = substr(md5($raw), 0, 10);
+    return $deviceId;
+}
+
 function generateToken($userId)
 {
     return md5($userId . time() . uniqid());

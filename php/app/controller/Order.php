@@ -62,19 +62,6 @@ class Order extends BaseController
         $order = Db::name('order')->where('merchant_order_sn', $params['orderSn'])->where('merchant_id', $merchant['id'])->find();
         if ($order) $this->apiError('orderSn 订单号已存在', 500);
         $orderSn = getOrderSn();
-        Db::name('order')->insert([
-            'order_sn' => $orderSn,
-            'merchant_order_sn' => $params['orderSn'],
-            'created_at' => date('Y-m-d H:i:s'),
-            'amount' => $params['amount'],
-            'fee' => $merchantPaymentProduct['rate'] / 100 * $params['amount'],
-            'price' => $params['amount'] - $merchantPaymentProduct['rate'] / 100 * $params['amount'],
-            'merchant_id' => $merchant['id'],
-            'product_id' => $params['productId'],
-            'notify_url' => $params['notifyUrl'],
-            'return_url' => $params['returnUrl'],
-            'ip' => $params['ip'],
-        ]);
         switch ($paymentProduct['id']) {
             case 1:
                 $config = [
@@ -82,13 +69,31 @@ class Order extends BaseController
                     'returnUrl' => $params['returnUrl'],
                     'notifyUrl' => 'https://zsmxnn.fs620.com/api/order/notify',
                     'ip' => $params['ip'],
-                    'orderSn' => $orderSn
+                    'orderSn' => $orderSn,
+                    'userId' => generateDeviceId(request())
                 ];
                 $sandPayService = new SandPayService();
-                $url = $sandPayService->createOrder($config);
-                $this->success([
-                    'url' => $url
-                ]);
+                $data = $sandPayService->createOrder($config);
+                if ($data['code'] == 1) {
+                    Db::name('order')->insert([
+                        'order_sn' => $orderSn,
+                        'merchant_order_sn' => $params['orderSn'],
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'amount' => $params['amount'],
+                        'fee' => $merchantPaymentProduct['rate'] / 100 * $params['amount'],
+                        'price' => $params['amount'] - $merchantPaymentProduct['rate'] / 100 * $params['amount'],
+                        'merchant_id' => $merchant['id'],
+                        'product_id' => $params['productId'],
+                        'notify_url' => $params['notifyUrl'],
+                        'return_url' => $params['returnUrl'],
+                        'ip' => $params['ip'],
+                    ]);
+                    $this->success([
+                        'url' => $data['url']
+                    ]);
+                } else {
+                    $this->error($data['msg']);
+                }
                 break;
         }
     }

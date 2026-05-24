@@ -48,7 +48,7 @@ class SandPayService
             'payType' => 'FASTPAY',
             'payerInfo' => [
                 'frontUrl' => $params['returnUrl'],
-                'userId' => $params['ip']
+                'userId' => $params['userId']
             ],
             'notifyUrl' => $params['notifyUrl'],
             'riskmgtInfo' => [
@@ -64,7 +64,11 @@ class SandPayService
         $verify = $this->verify($result['bizData'], $result['sign'], $this->loadX509Cert($this->publicKeyPath));
         $decryptAESKey = $this->rsaDecryptByPri($result['encryptKey'], $this->loadPk12Cert($this->privateKeyPath, $this->pfxPassword));
         $result = json_decode($this->aesDecrypt($result['bizData'], $decryptAESKey), true);
-        return $result['credential']['cashierUrl'];
+        if ($result['resultStatus'] == 'fail') {
+            return ['code' => 0, 'msg' => $result['errorDesc']];
+        } else {
+            return ['code' => 1, 'url' => $result['credential']['cashierUrl']];
+        }
     }
 
     function sign($plainText, $path)
