@@ -48,7 +48,7 @@ class SandPayService
             'payType' => 'FASTPAY',
             'payerInfo' => [
                 'frontUrl' => $params['returnUrl'],
-                'userId' => '1'
+                'userId' => $params['ip']
             ],
             'notifyUrl' => $params['notifyUrl'],
             'riskmgtInfo' => [

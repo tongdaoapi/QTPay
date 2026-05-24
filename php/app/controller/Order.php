@@ -159,6 +159,7 @@ class Order extends BaseController
                 'pay_status' => 1,
                 'pay_at' => date('Y-m-d H:i:s')
             ]);
+            Db::name('merchant')->where('id', $order['merchant_id'])->setInc('amount', $order['price']);
             $this->success($orderSn . '回调创建成功');
         }
     }
