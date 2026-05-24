@@ -14,17 +14,7 @@ class Order extends BaseController
 
     public function test()
     {
-        $data = [
-            'appid' => '1',
-            'amount' => '100',
-            'productId' => '1',
-            'orderSn' => time(),
-            'notifyUrl' => 'asd',
-            'returnUrl' => 'asd',
-            'ip' => '123'
-        ];
-        $res = $this->curlPost('http://localhost:8848/api/order/createOrder', $data);
-        return json(json_decode($res, true));
+        Db::name('merchant')->where('id', 4)->setInc('amount', 1);
     }
 
     function curlPost($url, $data)
@@ -141,6 +131,7 @@ class Order extends BaseController
                 'order_id' => $order['id'],
                 'last_notify_time' => date('Y-m-d H:i:s'),
             ]);
+            Db::name('merchant')->where('id', $order['merchant_id'])->setInc('amount', $order['price']);
         }
         die('success');
     }
@@ -164,7 +155,6 @@ class Order extends BaseController
                 'pay_status' => 1,
                 'pay_at' => date('Y-m-d H:i:s')
             ]);
-            Db::name('merchant')->where('id', $order['merchant_id'])->setInc('amount', $order['price']);
             $this->success($orderSn . '回调创建成功');
         }
     }
