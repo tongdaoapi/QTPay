@@ -57,7 +57,7 @@ class Order extends BaseController
                 $config = [
                     'amount' => $params['amount'],
                     'returnUrl' => $params['returnUrl'],
-                    'notifyUrl' => 'https://zsmxnn.cwrjzg.com/api/order/notify',
+                    'notifyUrl' => 'https://zsmxnn.cwrjzg.com/order/notify',
                     'ip' => $params['ip'],
                     'orderSn' => $orderSn,
                     'userId' => generateDeviceId(request())
