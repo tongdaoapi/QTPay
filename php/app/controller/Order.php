@@ -43,7 +43,7 @@ class Order extends BaseController
         $merchant = Db::name('merchant')->where('appid', $params['appid'])->find();
         if (!$merchant) $this->apiError('appid 填写错误', 500);
         if ($params['sign'] != $this->getSign($params, $merchant['secret'])) $this->apiError('sign 填写错误');
-        $merchantPaymentProduct = Db::name('merchant_payment_product')->where('id', $params['productId'])->find();
+        $merchantPaymentProduct = Db::name('merchant_payment_product')->where('id', $params['productId'])->where('merchant_id', $merchant['id'])->find();
         if (!$merchantPaymentProduct) $this->apiError('productId 填写错误', 500);
         $paymentProduct = Db::name('payment_product')->where('id', $merchantPaymentProduct['payment_product_id'])->find();
         if (!$paymentProduct) $this->apiError('productId 填写错误', 500);
@@ -57,7 +57,7 @@ class Order extends BaseController
                 $config = [
                     'amount' => $params['amount'],
                     'returnUrl' => $params['returnUrl'],
-                    'notifyUrl' => 'https://zsmxnn.fs620.com/api/order/notify',
+                    'notifyUrl' => 'https://zsmxnn.cwrjzg.com/api/order/notify',
                     'ip' => $params['ip'],
                     'orderSn' => $orderSn,
                     'userId' => generateDeviceId(request())
