@@ -39,6 +39,7 @@ class Order extends BaseController
         if (!isset($params['notifyUrl']) || !$params['notifyUrl']) $this->apiError('notifyUrl 不能为空', 500);
         if (!isset($params['returnUrl']) || !$params['returnUrl']) $this->apiError('returnUrl 不能为空', 500);
         if (!isset($params['ip']) || !$params['ip']) $this->apiError('ip 不能为空', 500);
+        if (!isset($params['userId']) || !$params['userId']) $this->apiError('userId 不能为空', 500);
         if (!isset($params['sign']) || !$params['sign']) $this->apiError('sign 不能为空', 500);
         $merchant = Db::name('merchant')->where('appid', $params['appid'])->find();
         if (!$merchant) $this->apiError('appid 填写错误', 500);
@@ -60,7 +61,7 @@ class Order extends BaseController
                     'notifyUrl' => 'https://zsmxnn.cwrjzg.com/order/notify',
                     'ip' => $params['ip'],
                     'orderSn' => $orderSn,
-                    'userId' => generateDeviceId(request())
+                    'userId' => $params['userId'],
                 ];
                 $sandPayService = new SandPayService();
                 $data = $sandPayService->createOrder($config);
